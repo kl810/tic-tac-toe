@@ -36,7 +36,10 @@ export default function Gameboard({onSelectSquare, turns}) {
                     <ol>
                         {row.map((playerSymbol, colIndex) => (
                             <li key={colIndex}>
-                                <button onClick={() => onSelectSquare(rowIndex, colIndex)}>
+                                <button 
+                                    onClick={() => onSelectSquare(rowIndex, colIndex)}
+                                    disabled={playerSymbol !== null} //if playerSymbol has been placed/clicked (true) then disable this button/square
+                                >
                                     {playerSymbol}
                                 </button>
                             </li>
