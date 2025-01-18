@@ -30,7 +30,7 @@ function App() {
   const activePlayer = deriveActivePlayer(gameTurns); //doing it without extra state line 18
 
   //moved from Gameboard.jsx
-  let gameBoard = initialGameBoard;
+  let gameBoard = [...initialGameBoard.map(array => [...array])]; //derive brand new array and not overiding initialGameBoard array in memory
 
   for (const turn of gameTurns) {
       const { square, player } = turn; //extract prop from {turns} (setGameBoard - updatedTurns)
@@ -74,6 +74,10 @@ function App() {
     })
   }
 
+  function handleRestart() {
+    setGameTurns([]);
+  }
+
   return (
     <main>
       <div id="game-container">
@@ -81,7 +85,7 @@ function App() {
           <Player initialName="Player 1" symbol="X" isActive={activePlayer === 'X'} />
           <Player initialName="Player 2" symbol="O" isActive={activePlayer === 'O'}/>
         </ol>
-        {(winner || hasDraw) && <GameOver winner={winner}/>}
+        {(winner || hasDraw) && <GameOver winner={winner} onRestart={handleRestart}/>}
         <Gameboard 
           onSelectSquare={handleSelectSquare} 
           board={gameBoard}
