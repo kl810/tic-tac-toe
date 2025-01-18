@@ -7,8 +7,22 @@ function App() {
   const [gameTurns, setGameTurns] = useState([])
   const [activePlayer, setActivePlayer] = useState('X')
 
-  function handleSelectSquare() {
+  function handleSelectSquare(rowIndex, colIndex) {
     setActivePlayer((curActivePlayer) => curActivePlayer === 'X' ? 'O' : 'X')
+    setGameTurns(prevTurns => {
+    let currentPlayer = 'X' //don't merge states with 'activePlayer', create currentPlayer variable
+
+    if (prevTurns.length > 0 && prevTurns[0].player === 'X') {
+      currentPlayer = 'O'
+    }
+
+      const updatedTurns = [
+        { square: { row:rowIndex, col:colIndex }, player: currentPlayer },
+        ...prevTurns
+      ]; //always create shallow copy so it is immutable
+
+      return updatedTurns
+    })
   }
 
   return (
@@ -18,7 +32,10 @@ function App() {
           <Player initialName="Player 1" symbol="X" isActive={activePlayer === 'X'} />
           <Player initialName="Player 2" symbol="O" isActive={activePlayer === 'O'}/>
         </ol>
-        <Gameboard onSelectSquare={handleSelectSquare} activePlayerSymbol={activePlayer}/>
+        <Gameboard 
+          onSelectSquare={handleSelectSquare} 
+          turns={gameTurns}
+        />
       </div>
       <Log />
     </main>
