@@ -4,6 +4,14 @@ import Gameboard from "./components/Gameboard";
 import Log from "./components/Log";
 import { WINNING_COMBINATIONS } from "./winning-combinations";
 
+//moved from Gameboard.jsx
+const initialGameBoard = [
+  [null, null ,null],
+  [null, null ,null],
+  [null, null ,null],
+];
+
+
 function deriveActivePlayer(gameTurns) { //prop derived from line 20
   let currentPlayer = 'X' 
 
@@ -19,6 +27,35 @@ function App() {
   // const [activePlayer, setActivePlayer] = useState('X')
 
   const activePlayer = deriveActivePlayer(gameTurns); //doing it without extra state line 18
+
+  //moved from Gameboard.jsx
+  let gameBoard = initialGameBoard;
+
+  for (const turn of gameTurns) {
+      const { square, player } = turn; //extract prop from {turns} (setGameBoard - updatedTurns)
+      const { row, col } = square; //object destructuring {turns} (setGameBoard - updatedTurns)
+
+      gameBoard[row][col] = player;
+  }
+
+  let winner = null;
+
+  for (const combination of WINNING_COMBINATIONS) { //iterate through each combination, checking eg index[0] of each combination etc
+    const firstSquareSymbol = 
+      gameBoard[combination[0].row][combination[0].column]
+    const secondSquareSymbol = 
+      gameBoard[combination[1].row][combination[1].column]
+    const thirdSquareSymbol = 
+      gameBoard[combination[2].row][combination[2].column]
+
+      if (
+        firstSquareSymbol && 
+        firstSquareSymbol === secondSquareSymbol && 
+        firstSquareSymbol === thirdSquareSymbol
+      ) {
+        winner = firstSquareSymbol;
+      }
+  }
 
   function handleSelectSquare(rowIndex, colIndex) {
     // setActivePlayer((curActivePlayer) => curActivePlayer === 'X' ? 'O' : 'X')
@@ -41,9 +78,10 @@ function App() {
           <Player initialName="Player 1" symbol="X" isActive={activePlayer === 'X'} />
           <Player initialName="Player 2" symbol="O" isActive={activePlayer === 'O'}/>
         </ol>
+        {winner && <p>You won, {winner}!</p>}
         <Gameboard 
           onSelectSquare={handleSelectSquare} 
-          turns={gameTurns}
+          board={gameBoard}
         />
       </div>
       <Log turns={gameTurns}/>
